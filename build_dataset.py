@@ -29,6 +29,6 @@ feat = ["pkts_per_s", "bytes_per_s", "avg_pkt_size"]
 print(df["label"].value_counts())
 print(df.groupby("label")[feat].median().round(1))
 
-out = os.path.expanduser("~/fyp/mininet_dataset.csv")
+out = os.path.expanduser("~/fyp/ds_" + os.path.basename(path))
 df[["time"] + key + feat + ["label"]].to_csv(out, index=False)
 print("saved", out, len(df), "rows")
