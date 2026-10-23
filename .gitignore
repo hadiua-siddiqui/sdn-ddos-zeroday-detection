@@ -6,3 +6,8 @@ ryu39-env/
 __pycache__/
 flow_stats_*.csv
 live_decisions_*.csv
+ryu39-env/
+__pycache__/
+flow_stats_*.csv
+live_decisions_*.csv
+block_events_*.csv
