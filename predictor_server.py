@@ -3,7 +3,7 @@ import numpy as np
 import xgboost as xgb
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-MODEL = "/home/hadiya/fyp/xgb_mininet.json"
+MODEL = "/home/hadiya/fyp/xgb_mininet4.json"
 FEATURES = ["pkts_per_s", "bytes_per_s", "avg_pkt_size"]
 
 bst = xgb.Booster()
