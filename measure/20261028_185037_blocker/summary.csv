@@ -1,0 +1,7 @@
+mode,phase,kind,detect_s,sent,replies,h5_rx_pkts,tcp_mbps,ryu_cpu,pred_cpu
+blocker,ref_tcp,normal,,,,581908,16300.0,1.0,77.2
+blocker,syn,attack,3.2,13297.0,2592.0,5185,,0.5,17.3
+blocker,icmp,attack,3.2,6981.0,1445.0,1446,,0.5,26.9
+blocker,udp400,attack,3.2,9165.0,9.0,1952,,0.5,16.9
+blocker,mixed_syn,attack,3.2,13361.0,2773.0,566924,16300.0,0.7,66.6
+blocker,mixed_udp700,attack,2.2,7111.0,8.0,748097,17600.0,0.7,70.3

@@ -1,4 +1,4 @@
-import time, json, urllib.request
+import os, time, json, urllib.request
 from ryu.app import simple_switch_13
 from ryu.controller import ofp_event
 from ryu.controller.handler import MAIN_DISPATCHER, DEAD_DISPATCHER, set_ev_cls
@@ -7,6 +7,7 @@ from ryu.lib import hub
 PREDICTOR = "http://127.0.0.1:5001"
 WATCH_DPID = 2            # attacker aur victim s2 (dpid 2) par hain
 POLL_SEC = 1
+BLOCK_ENABLED = os.environ.get("BLOCK", "1") == "1"
 CONSEC = 3                # itne lagatar second attack nikle to block
 BLOCK_SEC = 15            # block itni der rahe, phir khud khul jaye
 BLOCK_PRIORITY = 100
@@ -56,14 +57,14 @@ class AutoBlocker(simple_switch_13.SimpleSwitch13):
         return json.loads(urllib.request.urlopen(req, timeout=1).read())
 
     def _block(self, src, now):
-        for dp in list(self.datapaths.values()):
+        for dp in (list(self.datapaths.values()) if BLOCK_ENABLED else []):
             parser = dp.ofproto_parser
             match = parser.OFPMatch(eth_src=src)
             dp.send_msg(parser.OFPFlowMod(datapath=dp, priority=BLOCK_PRIORITY,
                                           match=match, instructions=[],
                                           hard_timeout=BLOCK_SEC))
         self.blocked[src] = now + BLOCK_SEC
-        self._event(now, "BLOCK", src, "streak=%d" % self.streak.get(src, 0))
+        self._event(now, "BLOCK" if BLOCK_ENABLED else "WOULD_BLOCK", src, "streak=%d" % self.streak.get(src, 0))
         self.logger.warning("BLOCKED %s for %d s", src, BLOCK_SEC)
 
     def _update(self, flagged, now):

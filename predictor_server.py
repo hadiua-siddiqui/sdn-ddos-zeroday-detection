@@ -8,6 +8,7 @@ FEATURES = ["pkts_per_s", "bytes_per_s", "avg_pkt_size"]
 
 bst = xgb.Booster()
 bst.load_model(MODEL)
+bst.set_param({"nthread": 1})
 
 class Handler(BaseHTTPRequestHandler):
     def do_POST(self):

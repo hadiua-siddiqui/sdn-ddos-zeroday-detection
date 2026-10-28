@@ -1,0 +1,7 @@
+mode,phase,kind,detect_s,sent,replies,h5_rx_pkts,tcp_mbps,ryu_cpu,pred_cpu
+baseline,ref_tcp,normal,,,,934662,24500.0,0.7,24.7
+baseline,syn,attack,2.8,13853.0,13850.0,27708,,0.4,2.5
+baseline,icmp,attack,2.8,7192.0,7190.0,7194,,0.4,3.6
+baseline,udp400,attack,2.9,9588.0,21.0,9595,,0.4,1.1
+baseline,mixed_syn,attack,2.9,14064.0,14062.0,1014645,26000.0,0.4,18.5
+baseline,mixed_udp700,attack,2.9,7254.0,20.0,950398,22200.0,0.5,17.0
