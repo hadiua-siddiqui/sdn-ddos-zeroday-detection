@@ -1,0 +1,100 @@
+
+[1m=== SDN DDoS demo: XGBoost detector + Ryu auto-block ===[0m
+h1, h2, h3 = normal users | h4 = attacker | h5 = victim server (10.0.0.5)
+
+*** Ping: testing ping reachability
+h1 -> h2 h3 h4 h5 
+h2 -> h1 h3 h4 h5 
+h3 -> h1 h2 h4 h5 
+h4 -> h1 h2 h3 h5 
+h5 -> h1 h2 h3 h4 
+*** Results: 0% dropped (20/20 received)
+
+>>> Normal traffic running: h1 ping (10/s) and h2 web requests (10/s)
+[  1s] [92mnormal           [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[  2s] [92mnormal           [0m | victim receives    77 pkt/s | normal ping replies  9/s
+[  3s] [92mnormal           [0m | victim receives    84 pkt/s | normal ping replies 10/s
+[  4s] [92mnormal           [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[  5s] [92mnormal           [0m | victim receives    72 pkt/s | normal ping replies  9/s
+[  6s] [92mnormal           [0m | victim receives    80 pkt/s | normal ping replies 10/s
+
+[91m[1m>>> PERSISTENT ATTACK: SYN flood from h4, 45 seconds non-stop (about 900 packets/s)[0m
+[  7s] [91mATTACK           [0m | victim receives  1736 pkt/s | normal ping replies 10/s
+[  8s] [91mATTACK           [0m | victim receives  1811 pkt/s | normal ping replies  9/s
+[  9s] [91mATTACK           [0m | victim receives  1815 pkt/s | normal ping replies 10/s
+[91m[1m>>> CONTROLLER: attack detected -> BLOCK h4 (3.4 s after attack start)[0m
+[ 10s] [91mATTACK + BLOCKED [0m | victim receives   727 pkt/s | normal ping replies  9/s
+[ 11s] [91mATTACK + BLOCKED [0m | victim receives    82 pkt/s | normal ping replies 10/s
+[ 12s] [91mATTACK + BLOCKED [0m | victim receives    81 pkt/s | normal ping replies 10/s
+[ 13s] [91mATTACK + BLOCKED [0m | victim receives    72 pkt/s | normal ping replies  9/s
+[ 14s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 15s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies 10/s
+[ 16s] [91mATTACK + BLOCKED [0m | victim receives    75 pkt/s | normal ping replies  9/s
+[ 17s] [91mATTACK + BLOCKED [0m | victim receives    77 pkt/s | normal ping replies 10/s
+[ 18s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 19s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 20s] [91mATTACK + BLOCKED [0m | victim receives    72 pkt/s | normal ping replies  9/s
+[ 21s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 22s] [91mATTACK + BLOCKED [0m | victim receives    76 pkt/s | normal ping replies 10/s
+[ 23s] [91mATTACK + BLOCKED [0m | victim receives    76 pkt/s | normal ping replies  9/s
+[ 24s] [91mATTACK + BLOCKED [0m | victim receives    81 pkt/s | normal ping replies 10/s
+[ 25s] [91mATTACK + BLOCKED [0m | victim receives  1238 pkt/s | normal ping replies  9/s
+[93m>>> CONTROLLER: UNBLOCK h4 (dropped packets: 13616)[0m
+[ 26s] [91mATTACK           [0m | victim receives  1793 pkt/s | normal ping replies 10/s
+[ 27s] [91mATTACK           [0m | victim receives  1794 pkt/s | normal ping replies  9/s
+[91m[1m>>> CONTROLLER: attack detected -> BLOCK h4 (21.4 s after attack start)[0m
+[ 28s] [91mATTACK + BLOCKED [0m | victim receives   576 pkt/s | normal ping replies 10/s
+[ 29s] [91mATTACK + BLOCKED [0m | victim receives    73 pkt/s | normal ping replies  9/s
+[ 30s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 31s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 32s] [91mATTACK + BLOCKED [0m | victim receives    73 pkt/s | normal ping replies  9/s
+[ 33s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies 10/s
+[ 34s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 35s] [91mATTACK + BLOCKED [0m | victim receives    73 pkt/s | normal ping replies 10/s
+[ 36s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 37s] [91mATTACK + BLOCKED [0m | victim receives    75 pkt/s | normal ping replies  9/s
+[ 38s] [91mATTACK + BLOCKED [0m | victim receives    77 pkt/s | normal ping replies 10/s
+[ 39s] [91mATTACK + BLOCKED [0m | victim receives    73 pkt/s | normal ping replies 10/s
+[ 40s] [91mATTACK + BLOCKED [0m | victim receives    80 pkt/s | normal ping replies  9/s
+[ 41s] [91mATTACK + BLOCKED [0m | victim receives    73 pkt/s | normal ping replies 10/s
+[ 42s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 43s] [91mATTACK + BLOCKED [0m | victim receives  1459 pkt/s | normal ping replies 10/s
+[93m>>> CONTROLLER: UNBLOCK h4 (dropped packets: 13604)[0m
+[ 44s] [91mATTACK           [0m | victim receives  1784 pkt/s | normal ping replies  9/s
+[ 45s] [91mATTACK           [0m | victim receives  1830 pkt/s | normal ping replies 10/s
+[91m[1m>>> CONTROLLER: attack detected -> BLOCK h4 (39.4 s after attack start)[0m
+[ 46s] [91mATTACK + BLOCKED [0m | victim receives   379 pkt/s | normal ping replies  9/s
+[ 47s] [91mATTACK + BLOCKED [0m | victim receives    66 pkt/s | normal ping replies 10/s
+[ 48s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 49s] [91mATTACK + BLOCKED [0m | victim receives    73 pkt/s | normal ping replies 10/s
+[ 50s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 51s] [91mATTACK + BLOCKED [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 52s] [93mBLOCK ACTIVE     [0m | victim receives    72 pkt/s | normal ping replies  9/s
+[ 53s] [93mBLOCK ACTIVE     [0m | victim receives    58 pkt/s | normal ping replies  8/s
+[ 54s] [93mBLOCK ACTIVE     [0m | victim receives    66 pkt/s | normal ping replies 10/s
+[ 55s] [93mBLOCK ACTIVE     [0m | victim receives    82 pkt/s | normal ping replies 10/s
+[ 56s] [93mBLOCK ACTIVE     [0m | victim receives    72 pkt/s | normal ping replies  9/s
+[ 57s] [93mBLOCK ACTIVE     [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 58s] [93mBLOCK ACTIVE     [0m | victim receives    80 pkt/s | normal ping replies 10/s
+[ 59s] [93mBLOCK ACTIVE     [0m | victim receives    74 pkt/s | normal ping replies 10/s
+[ 60s] [93mBLOCK ACTIVE     [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 61s] [93mBLOCK ACTIVE     [0m | victim receives    73 pkt/s | normal ping replies 10/s
+[93m>>> CONTROLLER: UNBLOCK h4 (dropped packets: 5681)[0m
+[ 62s] [92mnormal           [0m | victim receives    81 pkt/s | normal ping replies 10/s
+[ 63s] [92mnormal           [0m | victim receives    80 pkt/s | normal ping replies  9/s
+[ 64s] [92mnormal           [0m | victim receives    66 pkt/s | normal ping replies 10/s
+[ 65s] [92mnormal           [0m | victim receives    80 pkt/s | normal ping replies 10/s
+
+[1m=== PERSISTENT ATTACK SUMMARY ===[0m
+  attack lasted 45 s
+  BLOCK events: 3, at 3.4, 21.4, 39.4 s after attack start
+  seconds victim was still under attack (> 300 pkt/s): 12 of 45 (27%)
+[ 66s] [92mnormal           [0m | victim receives    73 pkt/s | normal ping replies 10/s
+[ 67s] [92mnormal           [0m | victim receives    79 pkt/s | normal ping replies  9/s
+[ 68s] [92mnormal           [0m | victim receives    72 pkt/s | normal ping replies 10/s
+
+[1m=== SUMMARY ===[0m
+  persist  blocked after 3.4 s
+  hosts blocked by the controller: h4
+  normal ping h1->h5: 671 sent, 671 received, 0% loss
+logs: demo_logs/20261028_215638

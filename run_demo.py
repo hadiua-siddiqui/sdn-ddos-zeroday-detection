@@ -55,6 +55,7 @@ def tick(seconds):
         cur, rp = rx(h5), replies()
         d_rx, d_rp = cur - S["prev_rx"], rp - S["prev_rep"]
         S["prev_rx"], S["prev_rep"] = cur, rp
+        S["last_rx"] = d_rx
         for ts, ev, src, det in new_events():
             EVENTS.append((ts, ev, src, det))
             who = NAMES.get(src, src)
@@ -92,6 +93,31 @@ def attack(title, cmd, tag):
     LAT[tag] = (blocks[0][0] - S["atk"]) if blocks else None
 
 
+def persistent(title, cmd, dur):
+    print("\n%s%s>>> PERSISTENT ATTACK: %s%s" % (R, B, title, N), flush=True)
+    S["atk"] = time.time()
+    S["attacking"] = True
+    thr = 300
+    leak = 0
+    bg(h4, cmd, "attack_persistent")
+    for _ in range(dur):
+        tick(1)
+        if S.get("last_rx", 0) > thr:
+            leak += 1
+    S["attacking"] = False
+    waited = 0
+    while S["blocked"] and waited < 25:
+        tick(1)
+        waited += 1
+    tick(3)
+    blocks = [e[0] - S["atk"] for e in EVENTS if e[1] == "BLOCK" and e[0] >= S["atk"]]
+    print("\n%s=== PERSISTENT ATTACK SUMMARY ===%s" % (B, N))
+    print("  attack lasted %d s" % dur)
+    print("  BLOCK events: %d, at %s s after attack start" % (len(blocks), ", ".join("%.1f" % b for b in blocks)))
+    print("  seconds victim was still under attack (> %d pkt/s): %d of %d (%.0f%%)" % (thr, leak, dur, 100.0 * leak / dur))
+    LAT["persist"] = blocks[0] if blocks else None
+
+
 net = Mininet(topo=FypTopo(), controller=None, autoSetMacs=True,
               switch=partial(OVSSwitch, protocols="OpenFlow13"))
 net.addController("c0", controller=RemoteController, ip="127.0.0.1", port=6653)
@@ -123,8 +149,12 @@ try:
     ]
     if MODE == "quick":
         atks = atks[:1]
-    for t, c, g in atks:
-        attack(t, c, g)
+    if MODE == "persistent":
+        persistent("SYN flood from h4, 45 seconds non-stop (about 900 packets/s)",
+                   "timeout -s INT 45 hping3 -q -S -p 80 -i u1000 " + V, 45)
+    else:
+        for t, c, g in atks:
+            attack(t, c, g)
     tick(3)
     h1.cmd("pkill -INT ping")
     time.sleep(1.5)
